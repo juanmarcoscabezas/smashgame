@@ -39,7 +39,9 @@ function setup() {
 			'assets/blue-player/playerBlue_fall.png');
 	player.maxSpeed = 10;
 
-  socket = io.connect('http://localhost:3000');
+  //socket = io.connect('http://localhost:3000');
+  socket = io.connect('/');
+
 	//ENVIANDO POSICION INICIAL
   var data = {
       x: player.position.x,

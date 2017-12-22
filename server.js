@@ -11,7 +11,6 @@ const INDEX = path.join(__dirname, 'index.html');
 const server = app.listen(PORT);
 app.use(express.static('public'));
 
-
 const io = socketIO(server);
 
 var players = [];
