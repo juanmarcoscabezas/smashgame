@@ -2,22 +2,10 @@ var player;
 var socket;
 var players = [];
 var enemys;
+var enemyImage;
 var r = 50;
 air = false;
 //doubleJump = 0;
-
-var player_frames =[
-  {"name":"playerBlue_walk1", "frame":{"x":0,"y":53,"width":45,"height":54}},
-  {"name":"playerBlue_walk2", "frame":{"x":46,"y":46,"width":45,"height":54}},
-  {"name":"playerBlue_walk3", "frame":{"x":0,"y":0,"width":45,"height":52}},
-  {"name":"playerBlue_walk4", "frame":{"x":46,"y":0,"width":49,"height":45}},
-  {"name":"playerBlue_walk5", "frame":{"x":0,"y":108,"width":64,"height":40}}
-];
-
-function preload(){
-		//player_sprite_sheet = loadSpriteSheet('assets/blue-player.png', player_frames);
-		//player_walk = loadAnimation(player_sprite_sheet);
-}
 
 function setup() {
 	createCanvas(640, 200);
@@ -38,6 +26,8 @@ function setup() {
 		player.addAnimation('fall',
 			'assets/blue-player/playerBlue_fall.png');
 	player.maxSpeed = 10;
+
+  enemyImage = loadImage('assets/blue-player/playerBlue_stand1.png');
 
   //socket = io.connect('http://localhost:3000');
   socket = io.connect('/');
@@ -60,8 +50,14 @@ function draw() {
 	move();
 	emitPosition();
 	drawEnemys();
+  player.collide(enemys, () => {
+    
+  });
   drawSprites();
+  console.log(player.position.y+"-"+air);
 }
+
+
 
 function emitPosition(){
 	var data = {
@@ -72,13 +68,11 @@ function emitPosition(){
 }
 
 function drawEnemys(){
-	/*for (var i = players.length - 1; i >= 0; i--) {
- 			fill(0, 0, 255);
-      ellipse(players[i].x, players[i].y, r, r);
- 	}*/
 	for (var i = 0; i < players.length; i++) {
-		//var newEnemy = createSprite(players[i].x, players[i].y, r, r);
-		//newEnemy.addToGroup(enemys);
+		var newEnemy = createSprite(players[i].x, players[i].y);
+    newEnemy.addImage(enemyImage);
+    newEnemy.life = 1;
+		enemys.add(newEnemy);
 	}
 }
 

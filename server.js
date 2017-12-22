@@ -47,8 +47,12 @@ io.on('connection', (socket) => {
 	});
 	//ENVIANDO INFORMACION DE JUGADORES
 	setInterval(function() {
+		var enemys = [];
 		for (var i = 0 ; i < players.length; i++) {
-			socket.broadcast.emit('enemys', players);
+			if(socket.id !== players[i].id){
+				enemys.push(players[i]);
+			}
 		}
+		socket.emit('enemys', enemys);
 	}, 1000 / 60);
 });
