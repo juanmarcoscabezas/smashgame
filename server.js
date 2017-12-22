@@ -1,19 +1,23 @@
-//INICIACION DE EXPRESS
-var express = require('express');
-var app = express();
-var server = app.listen(3000);
-//INICIACION JUGADORES
-players = [];
-//SERVER INICIADO
-console.log("server inciado");
-//CARPETA PARA COMPARTIR
+'use strict';
+
+const express = require('express');
+const app = express();
+const socketIO = require('socket.io');
+const path = require('path');
+
+const PORT = process.env.PORT || 3000;
+const INDEX = path.join(__dirname, 'index.html');
+
+const server = app.listen(PORT);
 app.use(express.static('public'));
-// INICIACION SOCKET
-var socket = require('socket.io');
-var io = socket(server);
-//CONEXIÖN SOCKET
-io.on('connection', function (socket) {
-	//RECIBIENDO NUEVOS JUGADORE
+
+
+const io = socketIO(server);
+
+var players = [];
+
+io.on('connection', (socket) => {
+  //RECIBIENDO NUEVOS JUGADORE
 	socket.on('newPlayer', function (data) {
 			players.push({
 				id: socket.id,
@@ -48,18 +52,4 @@ io.on('connection', function (socket) {
 			socket.broadcast.emit('enemys', players);
 		}
 	}, 1000 / 60);
-	/*setInterval(function() {
-		for (var i = 0 ; i < players.length; i++) {
-			if (players[i].id !== socket.id) {
-				var player = players[i];
-				var playersData = {
-					id: player.id,
-					x: player.x,
-					y: player.y
-				}
-				socket.broadcast.emit('enemys', player);
-			}
-		}
-	}, 1000 / 60);
-	*/
 });
