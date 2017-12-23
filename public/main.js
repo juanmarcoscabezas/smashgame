@@ -1,15 +1,24 @@
-var player;
 var socket;
+
+var player,r = 50, air = false;
 var players = [];
-var enemys;
-var enemyImage;
-var r = 50;
-air = false;
+
+var meteors = [], meteorsGroup, meteorImage;
+
+var enemys, enemyImage;
+
+var bgImg;
+
+const width = 640;
+const height = 200;
 //doubleJump = 0;
 
 function setup() {
 	createCanvas(640, 200);
+
 	enemys = new Group();
+  meteorsGroup = new Group();
+
 	player = createSprite(random(0, width),height);
 	player.addAnimation('walk',
 		'assets/blue-player/playerBlue_walk1.png',
@@ -29,6 +38,10 @@ function setup() {
 
   enemyImage = loadImage('assets/blue-player/playerBlue_stand1.png');
 
+  bgImg = loadImage("assets/set2_hills.png")
+
+  meteorImage = loadImage('assets/redgem.png')
+
   //socket = io.connect('http://localhost:3000');
   socket = io.connect('/');
 
@@ -42,6 +55,10 @@ function setup() {
   socket.on('enemys', function (data) {
       players = data;
   });
+  //RECIBIENDO LOS METEOROS
+  socket.on('meteors', function (data) {
+      meteors = data;
+  });
 }
 
 function draw() {
@@ -50,14 +67,14 @@ function draw() {
 	move();
 	emitPosition();
 	drawEnemys();
-  player.collide(enemys, () => {
-    
-  });
+  drawMeteors();
+  player.collide(enemys);
+  camera.off();
+  //image(bgImg,0,-200);
+  camera.on();
+
   drawSprites();
-  console.log(player.position.y+"-"+air);
 }
-
-
 
 function emitPosition(){
 	var data = {
@@ -73,6 +90,15 @@ function drawEnemys(){
     newEnemy.addImage(enemyImage);
     newEnemy.life = 1;
 		enemys.add(newEnemy);
+	}
+}
+
+function drawMeteors(){
+	for (var i = 0; i < meteors.length; i++) {
+		var newMeteor = createSprite(meteors[i].x, meteors[i].y);
+    newMeteor.addImage(meteorImage);
+    newMeteor.life = 1;
+		meteorsGroup.add(newMeteor);
 	}
 }
 

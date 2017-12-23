@@ -13,7 +13,11 @@ app.use(express.static('public'));
 
 const io = socketIO(server);
 
+const width = 640;
+const height = 200;
+
 var players = [];
+var meteors = [];
 
 io.on('connection', (socket) => {
   //RECIBIENDO NUEVOS JUGADORE
@@ -54,5 +58,27 @@ io.on('connection', (socket) => {
 			}
 		}
 		socket.emit('enemys', enemys);
+
+		//meteors
+		if(meteors.length < 1){
+			let meteor = {
+				x: random(0,width),
+				y: 0,
+				r: random(3,10)
+			}
+			meteors.push(meteor);
+		}
+		for (var i = 0; i < meteors.length; i++) {
+			meteors[i].y++;
+			if(meteors[i].y > height - meteors[i].r){
+				meteors.splice(i);
+			}
+		}
+		socket.emit('meteors', meteors);
+
 	}, 1000 / 60);
 });
+
+function random (low, high) {
+    return Math.floor(Math.random() * (high - low + 1) + low);
+}
