@@ -147,11 +147,10 @@ function border(){
 //COLISIONES EN EL JUEGO
 function collisions(){
   player.collide(enemys);
-  player.collide(meteorsGroup, destroy)
+  player.overlap(meteorsGroup, destroy)
 }
 
 function destroy(player, meteors){
-  removed = true;
   meteors.remove();
   socket.emit('removeMeteor', removed);
 }

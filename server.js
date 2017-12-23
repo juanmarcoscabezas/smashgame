@@ -70,12 +70,10 @@ io.on('connection', (socket) => {
 	//REMOVING METEORS
 	socket.on('removeMeteor', function(data){
 		for (var i = 0; i < players.length; i++) {
+			meteors.splice(0);
 			if(socket.id === players[i].id){
 				players[i].points ++;
 			}
-		}
-		if(data){
-			meteors.splice(0);
 		}
 	});
 });
