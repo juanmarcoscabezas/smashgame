@@ -13,6 +13,9 @@ const width = 640;
 const height = 200;
 //doubleJump = 0;
 
+var removed = false;
+var score = 0;
+
 function setup() {
 	createCanvas(640, 200);
 
@@ -42,7 +45,9 @@ function setup() {
 
   meteorImage = loadImage('assets/redGem.png')
 
-  //socket = io.connect('http://localhost:3000');
+
+
+  //CONEXIÓN DEL SOCKET
   socket = io.connect('/');
 
 	//ENVIANDO POSICION INICIAL
@@ -62,17 +67,20 @@ function setup() {
 }
 
 function draw() {
-  background(0);
+  background(255);
+
+  removed = false;
+
+  points();
 	border();
 	move();
 	emitPosition();
 	drawEnemys();
   drawMeteors();
-  player.collide(enemys);
+  collisions();
   camera.off();
-  //image(bgImg,0,-200);
+  image(bgImg,0,-200);
   camera.on();
-
   drawSprites();
 }
 
@@ -83,7 +91,7 @@ function emitPosition(){
   }
   socket.emit('player', data);
 }
-
+//DIBUJANDO ENEMIGOS
 function drawEnemys(){
 	for (var i = 0; i < players.length; i++) {
 		var newEnemy = createSprite(players[i].x, players[i].y);
@@ -92,7 +100,7 @@ function drawEnemys(){
 		enemys.add(newEnemy);
 	}
 }
-
+//DIBUJANDO METEOROS
 function drawMeteors(){
 	for (var i = 0; i < meteors.length; i++) {
 		var newMeteor = createSprite(meteors[i].x, meteors[i].y);
@@ -101,7 +109,7 @@ function drawMeteors(){
 		meteorsGroup.add(newMeteor);
 	}
 }
-
+//MOVIMIENTO DEL JUGADOR
 function move(){
   if(keyIsDown(LEFT_ARROW)){
 		if(!air) player.changeAnimation('walk');
@@ -116,10 +124,10 @@ function move(){
 	}
 	if(keyIsDown(UP_ARROW) && !air) {
 		player.changeAnimation('up');
-		player.addSpeed(8,270);
+		player.addSpeed(10,270);
 	}
 }
-
+//BORDES DEL MAPA
 function border(){
 	//TOP-BOTTOM BORDERS
   if(player.position.y < 0 + r ) player.position.y = 0 + r;
@@ -135,4 +143,23 @@ function border(){
 	//LEFT-RIGHT BORDERS
 	if(player.position.x < 0 + r/2 ) player.position.x = 0 +r/2;
 	if(player.position.x > width - r/2) player.position.x = width - r/2;
+}
+//COLISIONES EN EL JUEGO
+function collisions(){
+  player.collide(enemys);
+  player.overlap(meteorsGroup, destroy)
+}
+
+function destroy(player, meteors){
+  removed = true;
+  meteors.remove();
+  socket.emit('removeMeteor', removed);
+}
+
+function points(){
+  socket.on('points', function (data) {
+    score = data;
+  });
+  textSize(20);
+  text("Puntaje: "+score, 10, 10, 70, 80);
 }

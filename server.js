@@ -18,7 +18,7 @@ const height = 200;
 
 var players = [];
 var meteors = [];
-const SPEED = 1;
+const SPEED = 2;
 
 io.on('connection', (socket) => {
   //RECIBIENDO NUEVOS JUGADORE
@@ -26,12 +26,11 @@ io.on('connection', (socket) => {
 			players.push({
 				id: socket.id,
 				x: data.x,
-				y: data.y
+				y: data.y,
+				points: 0
 			});
 			console.log("nueva conexión " + socket.id);
   });
-	//EMITIOENDO ID
-	io.sockets.emit('id', socket.id);
   //EMISION POSICION JUGADOR
 	socket.on('player', function (data) {
 		for (var i = 0; i < players.length; i++) {
@@ -41,7 +40,7 @@ io.on('connection', (socket) => {
 			}
 		}
 	});
-		//MANEJO DE LAS DESCONEXIONES
+	//MANEJO DE LAS DESCONEXIONES
 	socket.on('disconnect', function () {
     for (var i = players.length - 1; i >= 0; i--) {
 			if(players[i].id === socket.id){
@@ -52,6 +51,7 @@ io.on('connection', (socket) => {
 	});
 	//ENVIANDO INFORMACION DE JUGADORES
 	setInterval(function() {
+		//SENDING ENEMYS
 		var enemys = [];
 		for (var i = 0 ; i < players.length; i++) {
 			if(socket.id !== players[i].id){
@@ -59,11 +59,27 @@ io.on('connection', (socket) => {
 			}
 		}
 		socket.emit('enemys', enemys);
+		//SENDING POINTS
+		for (var i = 0; i < players.length; i++) {
+			if(players[i].id === socket.id){
+				io.sockets.emit('points', players[i].points);
+			}
+		}
 	}, 1000 / 60);
+	//REMOVING METEORS
+	socket.on('removeMeteor', function(data){
+		for (var i = 0; i < players.length; i++) {
+			if(socket.id === players[i].id){
+				players[i].points ++;
+			}
+		}
+		if(data){
+			meteors.splice(0);
+		}
+	});
 });
-
+//METEORS
 setInterval(function (){
-	//meteors
 	if(meteors.length < 1){
 		let meteor = {
 			x: random(0,width),
@@ -80,7 +96,7 @@ setInterval(function (){
 	}
 	io.emit('meteors', meteors);
 }, 1000 / 60);
-
+//RANDOM NUMBERS
 function random (low, high) {
     return Math.floor(Math.random() * (high - low + 1) + low);
 }
