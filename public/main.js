@@ -40,7 +40,7 @@ function setup() {
 
   bgImg = loadImage("assets/set2_hills.png")
 
-  meteorImage = loadImage('assets/redgem.png')
+  meteorImage = loadImage('assets/redGem.png')
 
   //socket = io.connect('http://localhost:3000');
   socket = io.connect('/');
