@@ -62,9 +62,10 @@ io.on('connection', (socket) => {
 		//SENDING POINTS
 		for (var i = 0; i < players.length; i++) {
 			if(players[i].id === socket.id){
-				io.sockets.emit('points', players[i].points);
+				socket.emit('points', players[i].points);
 			}
 		}
+
 	}, 1000 / 60);
 	//REMOVING METEORS
 	socket.on('removeMeteor', function(data){
@@ -83,7 +84,7 @@ setInterval(function (){
 	if(meteors.length < 1){
 		let meteor = {
 			x: random(0,width),
-			y: 0,
+			y: -10,
 			r: random(3,10)
 		}
 		meteors.push(meteor);
