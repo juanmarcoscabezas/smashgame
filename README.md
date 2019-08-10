@@ -8,7 +8,7 @@ smashgame está disponible en http://smashgame.herokuapp.com/
 Para moverse, se debe hacer mediante el uso de las teclas de dirección.
 Para saltar, usar la tecla de espacio.
 
-### "npm start" - para iniciar el servidor
-### Acceder a localhost:3000
+### "npm start"      - para iniciar el servidor.
+### "localhost:3000" - para acceder al juego.
 
 
