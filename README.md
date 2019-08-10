@@ -11,4 +11,4 @@ Para saltar, usar la tecla de espacio.
 ### "npm start"      - para iniciar el servidor.
 ### "localhost:3000" - para acceder al juego.
 
-![alt text](https://raw.githubusercontent.com/juanmarcoscabezas/smashgame/master/smasggame.png)
+![imagen smashgame](https://raw.githubusercontent.com/juanmarcoscabezas/smashgame/master/smasggame.png)
